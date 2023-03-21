@@ -217,7 +217,7 @@ export class EziServo implements IEziServo {
   getAllStatus() {}
 
   @packet(FrameType.FAS_SetCommandPos, 'uint', null)
-  setCommandPos() {}
+  setCommandPos(pos) {}
 
   @packet(FrameType.FAS_GetCommandPos, null, 'int')
   getCommandPos() {}

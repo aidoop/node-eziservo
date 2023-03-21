@@ -1,3 +1,4 @@
+import { getErrorCodeString } from './error-code'
 import { getDeserializer, getSerializer } from './packet'
 
 export const mutex = (target: Object, property: string, descriptor: TypedPropertyDescriptor<any>): any => {
@@ -31,7 +32,7 @@ export const packet =
 
       var { errorCode, resData, resDataSize } = await this.handleCommand(command, reqData)
       if (errorCode) {
-        console.error(`received error code(${errorCode}) - command(${command})`)
+        console.error(`received error code(${errorCode}, ${getErrorCodeString(errorCode)}) - command(${command})`)
         return errorCode
       }
 

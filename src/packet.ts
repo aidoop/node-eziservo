@@ -1,6 +1,5 @@
 import Struct from 'struct'
 
-import { ErrorCode } from './error-code'
 import { IEziServo } from './eziservo-interface'
 
 /* Robot Interface */
@@ -13,10 +12,8 @@ export const SIZE_DATA_MAX = 200
 export const SIZE_DATA_ASCII_MAX = 32
 export const SIZE_PACKET = 256
 
-/* C-type Data */
-export const TOOMUCH = 10 * 1024 * 1024
-
-export const HeaderFrameFormat = Struct() // need to be packed
+/* Header foramt */
+export const HeaderFrameFormat = Struct()
   .word8('header', 1)
   .word8('frameLength', 1)
   .word8('syncNo', 1)
@@ -260,21 +257,4 @@ export function buildReqPacket(
     header,
     buffer
   }
-}
-
-export function checkHeader(reqHeader, resHeader, errorCode = ErrorCode.ERR_NONE) {
-  const checklist = ['robotName', 'stepInfo', 'invokeId', 'sof', 'command']
-
-  for (let prop in checklist) {
-    if (reqHeader[prop] !== resHeader[prop]) {
-      console.log('Header check fail (', prop, '): Request ', reqHeader[prop], ', Response ', resHeader[prop])
-    }
-  }
-
-  // if (resHeader.command == CommandCode.CMD_ERROR) {
-  //   console.log(getErrorString(errorCode))
-  //   return errorCode
-  // }
-
-  return ErrorCode.ERR_NONE
 }
