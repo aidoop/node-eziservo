@@ -5,7 +5,8 @@ import { IEziServo } from './eziservo-interface'
 
 /* Robot Interface */
 export const SIZE_HEADER = 5
-export const SIZE_FRAMELENGTH_OFFSET = 3
+export const SIZE_STATUS = 1
+export const SIZE_FRAMELEN_HEADER = 3
 export const SIZE_COMMAND = 4
 export const SIZE_DATA_TCP_MAX = 259
 export const SIZE_DATA_MAX = 200
@@ -64,6 +65,16 @@ export const DTRANSFORM = {
       return !!buffer.readUInt8(0)
     }
   },
+  byte: {
+    serializer(x) {
+      var buffer = Buffer.alloc(1)
+      buffer.writeUint8(x)
+      return buffer
+    },
+    deserializer(buffer) {
+      return buffer.readUInt8(0)
+    }
+  },
   int: {
     serializer(x) {
       var buffer = Buffer.alloc(4)
@@ -82,6 +93,16 @@ export const DTRANSFORM = {
     },
     deserializer(buffer) {
       return buffer.readUInt32LE(0)
+    }
+  },
+  uint16: {
+    serializer(x) {
+      var buffer = Buffer.alloc(2)
+      buffer.writeUInt16LE(x)
+      return buffer
+    },
+    deserializer(buffer) {
+      return buffer.readUInt16LE(0)
     }
   },
   float: {
@@ -221,7 +242,7 @@ export function buildReqPacket(
   reqDataSize = reqDataSize || reqData?.length || 0
 
   header.header = 0xaa
-  header.frameLength = reqDataSize ? reqDataSize + SIZE_FRAMELENGTH_OFFSET : SIZE_FRAMELENGTH_OFFSET
+  header.frameLength = reqDataSize ? reqDataSize + SIZE_FRAMELEN_HEADER : SIZE_FRAMELEN_HEADER
   header.syncNo = ++client.syncNo
 
   header.reserved = 0x00

@@ -29,13 +29,13 @@ export const packet =
         reqData = serializer.apply(null, args)
       }
 
-      var { errorCode, resData, resDataSize, resStatus } = await this.handleCommand(command, reqData)
+      var { errorCode, resData, resDataSize } = await this.handleCommand(command, reqData)
       if (errorCode) {
+        console.error(`received error code(${errorCode}) - command(${command})`)
         return errorCode
       }
 
-      // TODO: check resStatus here..
-      // ...
+      // TODO: handle error codes here.. need to consider it
 
       var result = resData
       if (resDataType) {

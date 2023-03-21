@@ -39,5 +39,5 @@ export interface IEziServo {
   connect()
   disconnect()
   shutdown()
-  handleCommand(command, reqData, reqDataSize): Promise<{ errorCode; resData; resDataSize; resStatus }>
+  handleCommand(command, reqData, reqDataSize): Promise<{ errorCode; resData; resDataSize }>
 }

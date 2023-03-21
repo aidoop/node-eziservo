@@ -1,4 +1,5 @@
 import { EziServo } from '../../src/eziservo-client'
+import { sleep } from '../../src/utils'
 import { EZISERVO_IP, EZISERVO_NAME } from '../settings'
 
 describe('EziServo', function () {
@@ -9,8 +10,7 @@ describe('EziServo', function () {
       var client = new EziServo(EZISERVO_IP, EZISERVO_NAME)
       await client.connect()
 
-      let board_info = await client.getBoardInfo()
-      console.log(board_info)
+      await sleep(1000)
 
       client.disconnect()
     })
