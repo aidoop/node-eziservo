@@ -82,6 +82,8 @@ export class EziServo implements IEziServo {
     var recvMsg = await this._recvMessage()
     //var recvMsg = Buffer.from([0xaa, 0x9, 0xee, 0x00, 0x01, 0x10, 0x33, 0x34, 0x35, 0x36, 0x00])
 
+    console.log('recvMsg: \n', recvMsg)
+
     var resHeader = parsePacketHeader(recvMsg)
 
     // receive data from socket
@@ -145,7 +147,11 @@ export class EziServo implements IEziServo {
 
   // TODO: 패킷이 문서의 내용과 다름. 문서는 1 byte의 값을 준다고 되어 있지만 실제로 받아보면 아무런 결과 값을 주지 않는다.
   @packet(FrameType.FAS_TriggerOutput_RunA, ['byte', 'uint', 'uint', 'uint', 'byte', 'uint'], null /*'byte'*/)
-  triggerOutputRunA(startOrFin, startPos, pulsePeriod, pulseWidth, outputPin = 0, dummy = 0) {}
+  _triggerOutputRunA(startOrFin, startPos, pulsePeriod, pulseWidth, outputPin = 0, dummy = 0) {}
+
+  async triggerOutputRunA(startOrFin, startPos, pulsePeriod, pulseWidth) {
+    await this._triggerOutputRunA(startOrFin, startPos, pulsePeriod, pulseWidth, 0, 0)
+  }
 
   @packet(FrameType.FAS_TriggerOutput_Status, null, 'byte')
   triggerOutputStatus() {}
@@ -174,16 +180,16 @@ export class EziServo implements IEziServo {
   @packet(FrameType.FAS_MoveOriginSingleAxis, null, null)
   moveOriginSingleAxis() {}
 
-  @packet(FrameType.FAS_MoveSingleAxisAbsPos, ['int', 'int'], null)
+  @packet(FrameType.FAS_MoveSingleAxisAbsPos, ['int', 'uint'], null)
   moveSingleAxisAbsPos(absPos, drvSpeed) {}
 
-  @packet(FrameType.FAS_MoveSingleAxisIncPos, ['int', 'int'], null)
+  @packet(FrameType.FAS_MoveSingleAxisIncPos, ['int', 'uint'], null)
   moveSingleAxisIncPos(relPos, drvSpeed) {}
 
-  @packet(FrameType.FAS_MoveToLimit, ['int', 'byte'], null)
+  @packet(FrameType.FAS_MoveToLimit, ['uint', 'byte'], null)
   moveToLimit(drvSpeed, drvDirection) {}
 
-  @packet(FrameType.FAS_MoveVelocity, ['int', 'byte'], null)
+  @packet(FrameType.FAS_MoveVelocity, ['uint', 'byte'], null)
   moveVelocity(drvSpeed, drvDirection) {}
 
   @packet(FrameType.FAS_PositionAbsOverride, 'int', null)
@@ -192,28 +198,40 @@ export class EziServo implements IEziServo {
   @packet(FrameType.FAS_PositionIncOverride, 'int', null)
   overridePositionInc(changedPos) {}
 
-  @packet(FrameType.FAS_VelocityOverride, 'int', null)
+  @packet(FrameType.FAS_VelocityOverride, 'uint', null)
   overrideVelocity(changedVel) {}
 
-  @packet(FrameType.FAS_MoveSingleAxisAbsPosEx, ['int', 'int', 'int', 'uint16', 'uint16', 'buffer'], null)
-  moveSingleAxisAbsPosEx(absPos, drvVelocity, flag, customAccelTime, customDecelTime, buffer) {}
+  @packet(FrameType.FAS_MoveSingleAxisAbsPosEx, ['int', 'uint', 'uint', 'uint16', 'uint16', 'buffer'], null)
+  _moveSingleAxisAbsPosEx(absPos, drvVelocity, flag, customAccelTime, customDecelTime, buffer) {}
 
-  @packet(FrameType.FAS_MoveSingleAxisIncPosEx, ['int', 'int', 'int', 'uint16', 'uint16', 'buffer'], null)
-  moveSingleAxisAbsIncEx(relPos, drvVelocity, flag, customAccelTime, customDecelTime, buffer) {}
+  async moveSingleAxisAbsPosEx(absPos, drvVelocity, flag, customAccelTime, customDecelTime) {
+    await this._moveSingleAxisAbsPosEx(absPos, drvVelocity, flag, customAccelTime, customDecelTime, Buffer.alloc(24))
+  }
 
-  @packet(FrameType.FAS_MoveVelocityEx, ['int', 'byte', 'uint', 'uint16', 'buffer'], null)
-  moveVelocityEx(drvVel, drvDir, flag, customAccelDecelTime, buffer) {}
+  @packet(FrameType.FAS_MoveSingleAxisIncPosEx, ['int', 'uint', 'uint', 'uint16', 'uint16', 'buffer'], null)
+  _moveSingleAxisIncPosEx(relPos, drvVelocity, flag, customAccelTime, customDecelTime, buffer) {}
+
+  async moveSingleAxisAbsIncPosEx(relPos, drvVelocity, flag, customAccelTime, customDecelTime, buffer) {
+    await this._moveSingleAxisIncPosEx(relPos, drvVelocity, flag, customAccelTime, customDecelTime, Buffer.alloc(24))
+  }
+
+  @packet(FrameType.FAS_MoveVelocityEx, ['uint', 'byte', 'uint', 'uint16', 'buffer'], null)
+  _moveVelocityEx(drvVel, drvDir, flag, customAccelDecelTime, buffer) {}
+
+  async moveVelocityEx(drvVel, drvDir, flag, customAccelDecelTime) {
+    await this._moveVelocityEx(drvVel, drvDir, flag, customAccelDecelTime, Buffer.alloc(26))
+  }
 
   @packet(FrameType.FAS_GetAxisStatus, null, 'uint')
   getAxisStatus() {}
 
-  @packet(FrameType.FAS_GetIOAxisStatus, null, ['byte', 'uint', 'uint', 'uint'])
+  @packet(FrameType.FAS_GetIOAxisStatus, null, ['uint', 'uint', 'uint'])
   getIOAxisStatus() {}
 
-  @packet(FrameType.FAS_GetMotionStatus, null, ['byte', 'uint', 'uint', 'uint', 'int', 'uint'])
+  @packet(FrameType.FAS_GetMotionStatus, null, ['int', 'int', 'int', 'uint', 'uint'])
   getMotionStatus() {}
 
-  @packet(FrameType.FAS_GetAllStatus, null, ['byte', 'uint', 'uint', 'uint', 'uint', 'int', 'int', 'int', 'int'])
+  @packet(FrameType.FAS_GetAllStatus, null, ['uint', 'uint', 'uint', 'int', 'int', 'int', 'uint', 'uint'])
   getAllStatus() {}
 
   @packet(FrameType.FAS_SetCommandPos, 'uint', null)

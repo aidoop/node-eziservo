@@ -40,7 +40,11 @@ export function parseResPacket(buffer) {
 export const DTYPESIZES = {
   char: 1,
   bool: 1,
+  byte: 1,
   int: 4,
+  uint: 4,
+  int16: 2,
+  uint16: 2,
   float: 4,
   double: 8
 }
@@ -90,6 +94,16 @@ export const DTRANSFORM = {
     },
     deserializer(buffer) {
       return buffer.readUInt32LE(0)
+    }
+  },
+  int16: {
+    serializer(x) {
+      var buffer = Buffer.alloc(2)
+      buffer.writeInt16LE(x)
+      return buffer
+    },
+    deserializer(buffer) {
+      return buffer.readInt16LE(0)
     }
   },
   uint16: {
@@ -197,7 +211,7 @@ export function getSerializer(type) {
     return function (...args) {
       var serializers = type.map(t => getSerializer(t))
       var result = Buffer.concat(serializers.map((serializer, i) => serializer.apply(null, [args[i]])))
-      console.log('array packet', args, result)
+      console.log('ser packet: \n', args, result)
       return result
     }
   } else {
@@ -214,14 +228,16 @@ export function getDeserializer(type) {
       var offset = 0
       return deserializers.map((deserializer, i) => {
         var size = DTYPESIZES[type[i]]
-        var value = deserializer.call(null, buffer.slice(offset, size))
+        var value = deserializer.call(null, buffer.slice(offset, offset + size))
         offset += size
 
+        console.log('deser packet: \n', value)
         return value
       })
     }
   } else {
     var transformer = DTRANSFORM[type] || DTRANSFORM['buffer']
+    console.log('deser packet 2: \n', transformer.deserializer)
     return transformer.deserializer
   }
 }

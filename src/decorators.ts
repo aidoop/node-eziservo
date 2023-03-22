@@ -31,6 +31,8 @@ export const packet =
       }
 
       var { errorCode, resData, resDataSize } = await this.handleCommand(command, reqData)
+      console.log('resData: \n', resData)
+
       if (errorCode) {
         console.error(`received error code(${errorCode}, ${getErrorCodeString(errorCode)}) - command(${command})`)
         return errorCode
