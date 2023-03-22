@@ -211,7 +211,7 @@ export function getSerializer(type) {
     return function (...args) {
       var serializers = type.map(t => getSerializer(t))
       var result = Buffer.concat(serializers.map((serializer, i) => serializer.apply(null, [args[i]])))
-      console.log('ser packet: \n', args, result)
+      // console.log('ser packet: \n', args, result)
       return result
     }
   } else {
@@ -231,13 +231,13 @@ export function getDeserializer(type) {
         var value = deserializer.call(null, buffer.slice(offset, offset + size))
         offset += size
 
-        console.log('deser packet: \n', value)
+        // console.log('deser packet: \n', value)
         return value
       })
     }
   } else {
     var transformer = DTRANSFORM[type] || DTRANSFORM['buffer']
-    console.log('deser packet 2: \n', transformer.deserializer)
+    // console.log('deser packet 2: \n', transformer.deserializer)
     return transformer.deserializer
   }
 }

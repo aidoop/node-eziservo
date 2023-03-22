@@ -82,7 +82,7 @@ export class EziServo implements IEziServo {
     var recvMsg = await this._recvMessage()
     //var recvMsg = Buffer.from([0xaa, 0x9, 0xee, 0x00, 0x01, 0x10, 0x33, 0x34, 0x35, 0x36, 0x00])
 
-    console.log('recvMsg: \n', recvMsg)
+    //console.log('recvMsg: \n', recvMsg)
 
     var resHeader = parsePacketHeader(recvMsg)
 
@@ -90,7 +90,7 @@ export class EziServo implements IEziServo {
     var resDataSize = resHeader.frameLength
 
     if (resDataSize > SIZE_DATA_TCP_MAX || resDataSize < 0) {
-      console.log(`Response data size is invalid ${resDataSize} (max: {}): Disconnected`)
+      console.error(`Response data size is invalid ${resDataSize} (max: {}): Disconnected`)
     } else if (resDataSize > 0) {
       var resStatus = recvMsg[SIZE_HEADER]
       var resData = recvMsg.slice(SIZE_HEADER + SIZE_STATUS, resDataSize + SIZE_FRAMELEN_HEADER)
