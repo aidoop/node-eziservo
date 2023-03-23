@@ -21,13 +21,6 @@ describe('EziServo', function () {
       let ioAssigns = await client.getIOAssignMap(0)
       console.log('ioAssigns: ', ioAssigns)
 
-      let readRomValue = await client.ioAssignMapReadROM()
-      console.log('ioAssignMapReadROM: ', readRomValue)
-
-      await client.triggerOutputRunA(0, 0, 8000000, 500)
-
-      console.log('triggerOutputStatus: ', await client.triggerOutputStatus())
-
       client.disconnect()
     })
   })

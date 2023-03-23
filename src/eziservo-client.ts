@@ -106,6 +106,8 @@ export class EziServo implements IEziServo {
     }
   }
 
+  async intialize() {}
+
   @packet(FrameType.FAS_GetboardInfo, null, 'string')
   getBoardInfo() {}
 

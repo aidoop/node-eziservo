@@ -1,4 +1,4 @@
-import { getErrorCodeString } from './error-code'
+import { getErrorCodeString } from './consts'
 import { getDeserializer, getSerializer } from './packet'
 
 export const mutex = (target: Object, property: string, descriptor: TypedPropertyDescriptor<any>): any => {
