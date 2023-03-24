@@ -25,13 +25,13 @@ export class EziServo implements IEziServo {
   private _lock
   private _serverPort
 
-  constructor(serverIp, servoModel = 'Plus-E') {
+  constructor(serverIp, port = 2002, servoModel = 'Plus-E') {
     this._lock = new AwaitLock()
 
     this.lock = this._lock
     this.socket
     this.serverIp = serverIp
-    this._serverPort = 2002
+    this._serverPort = port
     this.servoModel = servoModel
     this.syncNo = 0
   }
@@ -183,16 +183,16 @@ export class EziServo implements IEziServo {
   moveOriginSingleAxis() {}
 
   @packet(FrameType.FAS_MoveSingleAxisAbsPos, ['int', 'uint'], null)
-  moveSingleAxisAbsPos(absPos, drvSpeed) {}
+  moveSingleAxisAbsPos(absPos, drvVel) {}
 
   @packet(FrameType.FAS_MoveSingleAxisIncPos, ['int', 'uint'], null)
-  moveSingleAxisIncPos(relPos, drvSpeed) {}
+  moveSingleAxisIncPos(relPos, drvVel) {}
 
-  @packet(FrameType.FAS_MoveToLimit, ['uint', 'byte'], null)
-  moveToLimit(drvSpeed, drvDirection) {}
+  @packet(FrameType.FAS_MoveToLimit, ['uint', 'bool'], null)
+  moveToLimit(drvVel, drvDirection) {}
 
   @packet(FrameType.FAS_MoveVelocity, ['uint', 'byte'], null)
-  moveVelocity(drvSpeed, drvDirection) {}
+  moveVelocity(drvVel, drvDirection) {}
 
   @packet(FrameType.FAS_PositionAbsOverride, 'int', null)
   overridePositionAbs(changedPos) {}
@@ -257,7 +257,7 @@ export class EziServo implements IEziServo {
   @packet(FrameType.FAS_ClearPosition, null, null)
   clearPos() {}
 
-  @packet(FrameType.FAS_MovePause, 'byte', null)
+  @packet(FrameType.FAS_MovePause, 'bool', null)
   movePause(pause) {}
 
   @packet(FrameType.FAS_PosTableReadItem, 'uint16', 'buffer')

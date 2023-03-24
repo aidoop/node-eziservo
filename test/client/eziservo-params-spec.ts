@@ -1,14 +1,14 @@
 import { expect } from 'chai'
 
 import { EziServo } from '../../src/eziservo-client'
-import { EZISERVO_IP, EZISERVO_NAME } from '../settings'
+import { EZISERVO_IP, EZISERVO_NAME, EZISERVO_PORT } from '../settings'
 
 describe('EziServo', function () {
   describe('#Parameters', function () {
     this.timeout(10000)
 
     it('should change parameters in RAM', async () => {
-      var client = new EziServo(EZISERVO_IP, EZISERVO_NAME)
+      var client = new EziServo(EZISERVO_IP, EZISERVO_PORT, EZISERVO_NAME)
       await client.connect()
 
       let romParams = await client.getRomParameters(0)

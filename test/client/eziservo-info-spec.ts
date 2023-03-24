@@ -1,14 +1,14 @@
 import { expect } from 'chai'
 
 import { EziServo } from '../../src/eziservo-client'
-import { EZISERVO_IP, EZISERVO_NAME } from '../settings'
+import { EZISERVO_IP, EZISERVO_NAME, EZISERVO_PORT } from '../settings'
 
 describe('EziServo', function () {
   describe('#getBoardInfo', function () {
     this.timeout(10000)
 
     it('should return string', async () => {
-      var client = new EziServo(EZISERVO_IP, EZISERVO_NAME)
+      var client = new EziServo(EZISERVO_IP, EZISERVO_PORT, EZISERVO_NAME)
       await client.connect()
 
       let board_info: unknown = await client.getBoardInfo()
@@ -23,7 +23,7 @@ describe('EziServo', function () {
     this.timeout(10000)
 
     it('should return binary string', async () => {
-      var client = new EziServo(EZISERVO_IP, EZISERVO_NAME)
+      var client = new EziServo(EZISERVO_IP, EZISERVO_PORT, EZISERVO_NAME)
       await client.connect()
 
       let motor_info: unknown = await client.getMotorInfo()
